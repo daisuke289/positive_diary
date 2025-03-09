@@ -1,0 +1,106 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">日記の統計情報</h2>
+        </div>
+        <div class="card-body">
+          <div class="row text-center mb-4">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="card-title">合計エントリー</h3>
+                  <p class="display-4"><%= @total_entries %></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="card-title">平均気分スコア</h3>
+                  <p class="display-4">
+                    <%= @average_mood %>
+                    <% if @average_mood >= 7 %>
+                      <span class="text-success">😊</span>
+                    <% elsif @average_mood >= 4 %>
+                      <span class="text-warning">😐</span>
+                    <% else %>
+                      <span class="text-danger">😔</span>
+                    <% end %>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <% if @tags_data.present? %>
+            <h3 class="mb-3">よく使われるタグ</h3>
+            <div class="mb-4">
+              <% @tags_data.each do |tag, count| %>
+                <div class="d-inline-block me-3 mb-2">
+                  <%= link_to search_diaries_path(tag: tag), class: 'text-decoration-none' do %>
+                    <span class="badge bg-primary p-2 fs-6">
+                      #<%= tag %> <span class="badge bg-light text-dark"><%= count %></span>
+                    </span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+          
+          <% if @mood_data.present? %>
+            <h3 class="mb-3">気分スコアの推移</h3>
+            <div class="chart-container" style="position: relative; height:300px;">
+              <canvas id="moodChart"></canvas>
+            </div>
+            
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                const ctx = document.getElementById('moodChart').getContext('2d');
+                
+                const moodData = {
+                  labels: <%= raw @mood_data.keys.map { |date| date.strftime("%m/%d") }.to_json %>,
+                  datasets: [{
+                    label: '気分スコア',
+                    data: <%= raw @mood_data.values.to_json %>,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: false
+                  }]
+                };
+                
+                new Chart(ctx, {
+                  type: 'line',
+                  data: moodData,
+                  options: {
+                    scales: {
+                      y: {
+                        min: 1,
+                        max: 10,
+                        ticks: {
+                          stepSize: 1
+                        }
+                      }
+                    },
+                    plugins: {
+                      legend: {
+                        display: true
+                      }
+                    }
+                  }
+                });
+              });
+            </script>
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <%= link_to '日記一覧に戻る', diaries_path, class: 'btn btn-outline-secondary btn-lg' %>
+        <%= link_to '新しい日記を書く', new_diary_path, class: 'btn btn-primary btn-lg ms-2' %>
+      </div>
+    </div>
+  </div>
+</div> 

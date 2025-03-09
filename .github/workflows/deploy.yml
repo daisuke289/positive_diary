@@ -1,0 +1,45 @@
+name: Deploy to AWS Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - main  # メインブランチにプッシュされたときに実行
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          bundler-cache: true
+          
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+          
+      - name: Run tests
+        run: bundle exec rake test
+        
+      - name: Generate deployment package
+        run: |
+          mkdir -p .ebextensions
+          zip -r deploy.zip . -x "*.git*" "node_modules/*" "tmp/*" "log/*"
+        
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: positive-diary
+          environment_name: positive-diary-prod
+          version_label: positive-diary-${{ github.sha }}
+          region: ap-northeast-1
+          deployment_package: deploy.zip
+          wait_for_environment_recovery: 300 

@@ -6,13 +6,38 @@
           <%= notice %>
         </div>
       <% end %>
+      
+      <% if @diary.summary.present? %>
+        <div class="card shadow mb-4">
+          <div class="card-header bg-info text-white">
+            <h2 class="mb-0">要約</h2>
+          </div>
+          <div class="card-body">
+            <p class="fs-5"><%= @diary.summary %></p>
+          </div>
+        </div>
+      <% end %>
 
       <div class="card shadow mb-4">
-        <div class="card-header bg-secondary text-white">
+        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
           <h2 class="mb-0">元の日記</h2>
+          <% if @diary.mood_score.present? %>
+            <span class="badge bg-light text-dark p-2 fs-6">
+              気分: <%= @diary.mood_score %>/10
+              <%= @diary.mood_score >= 7 ? '😊' : (@diary.mood_score >= 4 ? '😐' : '😔') %>
+            </span>
+          <% end %>
         </div>
         <div class="card-body">
           <p class="diary-content"><%= simple_format(@diary.content) %></p>
+          
+          <% if @diary.tags.present? %>
+            <div class="mt-3">
+              <% @diary.tag_list.each do |tag| %>
+                <%= link_to "##{tag}", search_diaries_path(tag: tag), class: 'badge bg-secondary text-decoration-none me-1' %>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
 
@@ -27,6 +52,7 @@
 
       <div class="text-center mt-4">
         <%= link_to '新しい日記を書く', new_diary_path, class: 'btn btn-primary btn-lg' %>
+        <%= link_to '日記一覧に戻る', diaries_path, class: 'btn btn-outline-secondary btn-lg ms-2' %>
       </div>
     </div>
   </div>

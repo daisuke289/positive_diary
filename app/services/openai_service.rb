@@ -56,4 +56,89 @@ class OpenaiService
       return "申し訳ありません。テキスト変換中にエラーが発生しました。しばらく経ってからもう一度お試しください。(#{e.message})"
     end
   end
+  
+  def generate_summary(text)
+    begin
+      Rails.logger.debug("テキストの要約を生成しています...")
+      
+      response = @client.chat(
+        parameters: {
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "与えられたテキストを1-2文の簡潔な要約にしてください。最大40文字程度に収めてください。" },
+            { role: "user", content: text }
+          ],
+          temperature: 0.5,
+          max_tokens: 100
+        }
+      )
+      
+      Rails.logger.debug("OpenAI API Response: #{response.inspect}")
+      
+      if response.is_a?(Hash) && response["error"]
+        Rails.logger.error("OpenAI API Error: #{response["error"]["message"]}")
+        return nil
+      end
+      
+      content = nil
+      if response.is_a?(Hash)
+        content = response.dig("choices", 0, "message", "content")
+      elsif response.respond_to?(:choices) && response.choices.any?
+        choice = response.choices[0]
+        if choice.respond_to?(:message)
+          content = choice.message.content
+        elsif choice.is_a?(Hash) && choice[:message]
+          content = choice[:message][:content]
+        end
+      end
+      
+      content = content.to_s.gsub(/\s+/, ' ').strip
+      content = content[0..39] + '...' if content.length > 40
+      
+      return content
+    rescue => e
+      Rails.logger.error("OpenAI API Error in summary generation: #{e.message}")
+      return nil
+    end
+  end
+  
+  def suggest_tags(text)
+    begin
+      Rails.logger.debug("テキストからタグを生成しています...")
+      
+      response = @client.chat(
+        parameters: {
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "与えられたテキストから、感情や話題を表す1〜5個のタグを抽出してください。カンマ区切りの単語リストとして返してください。例: '仕事,ストレス,成長'" },
+            { role: "user", content: text }
+          ],
+          temperature: 0.5,
+          max_tokens: 100
+        }
+      )
+      
+      if response.is_a?(Hash) && response["error"]
+        Rails.logger.error("OpenAI API Error: #{response["error"]["message"]}")
+        return nil
+      end
+      
+      content = nil
+      if response.is_a?(Hash)
+        content = response.dig("choices", 0, "message", "content")
+      elsif response.respond_to?(:choices) && response.choices.any?
+        choice = response.choices[0]
+        if choice.respond_to?(:message)
+          content = choice.message.content
+        elsif choice.is_a?(Hash) && choice[:message]
+          content = choice[:message][:content]
+        end
+      end
+      
+      return content.to_s.strip
+    rescue => e
+      Rails.logger.error("OpenAI API Error in tag suggestion: #{e.message}")
+      return nil
+    end
+  end
 end 

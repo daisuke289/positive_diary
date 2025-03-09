@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   # Diaryリソースのアクションを定義
-  resources :diaries, only: [:index, :new, :create, :show]
+  resources :diaries, only: [:index, :new, :create, :show] do
+    collection do
+      get 'search'
+      get 'stats'
+    end
+  end
 
   # ルートページを設定
   root 'diaries#index'

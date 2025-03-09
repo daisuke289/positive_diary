@@ -28,6 +28,25 @@
               <%= form.text_area :content, rows: 10, class: 'form-control', placeholder: '例: 今日は仕事でミスばかりしてしまった。疲れたし、やる気が出ない。' %>
               <small class="form-text text-muted">最大2000文字まで入力できます</small>
             </div>
+            
+            <div class="form-group mb-4">
+              <%= form.label :mood_score, '今日の気分スコア（1〜10）', class: 'form-label' %>
+              <div class="d-flex align-items-center">
+                <span class="me-2">😞 1</span>
+                <%= form.range_field :mood_score, min: 1, max: 10, class: 'form-range flex-grow-1', value: 5 %>
+                <span class="ms-2">10 😊</span>
+              </div>
+              <small class="form-text text-muted">1（とても悪い）から10（とても良い）までで評価してください</small>
+            </div>
+            
+            <div class="form-group mb-4">
+              <%= form.label :tags, 'タグ（カンマ区切り）', class: 'form-label' %>
+              <%= form.text_field :tags, class: 'form-control', placeholder: '例: 仕事,健康,家族' %>
+              <div class="form-check mt-2">
+                <%= check_box_tag :auto_tag, "1", false, class: 'form-check-input' %>
+                <%= label_tag :auto_tag, 'AIにタグを自動生成させる', class: 'form-check-label' %>
+              </div>
+            </div>
 
             <div class="text-center">
               <%= form.submit '前向きな表現に変換する', class: 'btn btn-primary btn-lg' %>
