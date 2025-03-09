@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  # Diaryリソースの必要なアクションだけを定義
-  resources :diaries, only: [:new, :create, :show]
+  # Diaryリソースのアクションを定義
+  resources :diaries, only: [:index, :new, :create, :show]
 
   # ルートページを設定
-  root 'diaries#new'
+  root 'diaries#index'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

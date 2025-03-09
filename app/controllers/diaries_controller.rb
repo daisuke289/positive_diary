@@ -1,4 +1,8 @@
 class DiariesController < ApplicationController
+  def index
+    @diaries = Diary.order(created_at: :desc)
+  end
+
   def new
     @diary = Diary.new
   end

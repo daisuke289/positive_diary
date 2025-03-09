@@ -1,0 +1,35 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">あなたのポジティブ日記一覧</h2>
+        </div>
+        <div class="card-body">
+          <% if @diaries.any? %>
+            <div class="list-group">
+              <% @diaries.each do |diary| %>
+                <div class="list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"><%= truncate(diary.content, length: 50) %></h5>
+                    <small><%= diary.created_at.strftime('%Y年%m月%d日 %H:%M') %></small>
+                  </div>
+                  <p class="mb-1 text-success"><%= truncate(diary.positive_content, length: 100) %></p>
+                  <%= link_to '詳細を見る', diary_path(diary), class: 'btn btn-sm btn-outline-primary' %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="alert alert-info">
+              まだ日記がありません。新しい日記を書いてみましょう。
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <%= link_to '新しい日記を書く', new_diary_path, class: 'btn btn-primary btn-lg' %>
+      </div>
+    </div>
+  </div>
+</div> 
