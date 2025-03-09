@@ -35,7 +35,7 @@ gem "bootsnap", require: false
 # gem "image_processing", "~> 1.2"
 
 # OpenAI API client
-gem 'ruby-openai', '~> 6.0'
+gem 'ruby-openai', '~> 7.4'
 
 # HTTPクライアント
 gem 'httparty'
