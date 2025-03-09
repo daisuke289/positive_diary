@@ -1,0 +1,40 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h1 class="text-center mb-0">ポジティブ日記</h1>
+        </div>
+        <div class="card-body">
+          <p class="lead text-center mb-4">
+            あなたの日記を入力してください。<br>
+            AIがポジティブで励ましのある表現に変換します。
+          </p>
+
+          <%= form_with(model: @diary, local: true) do |form| %>
+            <% if @diary.errors.any? %>
+              <div class="alert alert-danger">
+                <h4><%= pluralize(@diary.errors.count, 'エラー') %>があります:</h4>
+                <ul>
+                  <% @diary.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="form-group mb-4">
+              <%= form.label :content, '今日の出来事や気持ちを自由に書いてください', class: 'form-label' %>
+              <%= form.text_area :content, rows: 10, class: 'form-control', placeholder: '例: 今日は仕事でミスばかりしてしまった。疲れたし、やる気が出ない。' %>
+              <small class="form-text text-muted">最大2000文字まで入力できます</small>
+            </div>
+
+            <div class="text-center">
+              <%= form.submit '前向きな表現に変換する', class: 'btn btn-primary btn-lg' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

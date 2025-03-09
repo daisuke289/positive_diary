@@ -1,0 +1,45 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <% if notice %>
+        <div class="alert alert-success">
+          <%= notice %>
+        </div>
+      <% end %>
+
+      <div class="card shadow mb-4">
+        <div class="card-header bg-secondary text-white">
+          <h2 class="mb-0">元の日記</h2>
+        </div>
+        <div class="card-body">
+          <p class="diary-content"><%= simple_format(@diary.content) %></p>
+        </div>
+      </div>
+
+      <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+          <h2 class="mb-0">ポジティブな表現に変換</h2>
+        </div>
+        <div class="card-body">
+          <p class="diary-content positive-content"><%= simple_format(@diary.positive_content) %></p>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <%= link_to '新しい日記を書く', new_diary_path, class: 'btn btn-primary btn-lg' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .diary-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+  
+  .positive-content {
+    color: #28a745;
+    font-weight: 500;
+  }
+</style>
