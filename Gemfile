@@ -43,6 +43,12 @@ gem 'httparty'
 # 環境変数管理
 gem 'dotenv-rails'
 
+# CI環境での互換性のために追加
+gem 'psych', '< 5.0'
+gem 'net-smtp'
+gem 'net-imap'
+gem 'net-pop'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mswin mswin64 mingw x64_mingw ], require: "debug/prelude"
