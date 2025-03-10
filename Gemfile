@@ -47,7 +47,7 @@ gem "chartkick", "~> 5.0"
 gem "dotenv-rails", "~> 2.8"
 
 # CI環境での互換性のために追加
-gem 'psych', '< 5.0'
+gem 'psych', '< 6.0'
 gem 'net-smtp'
 gem 'net-imap'
 gem 'net-pop'
